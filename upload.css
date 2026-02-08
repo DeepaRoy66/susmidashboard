@@ -1,0 +1,93 @@
+* {
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif
+}
+
+
+
+.form-card {
+    max-width: 650px;
+    margin: auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.form-card h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #444;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 80px
+}
+
+input[type="file"] {
+    padding: 6px;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+button {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 12px 30px;
+    font-size: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1e4fd6
+}
+
+.note {
+    font-size: 12px;
+    color: #666;
+    margin-top: 6px;
+}@media (max-width: 768px) {
+    .row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    .form-card {
+        padding: 20px;
+    }
+    button {
+        width: 100%;
+    }
+}

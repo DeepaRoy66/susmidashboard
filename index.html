@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="sidebar.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-top">
+
+                <i class="fa fa-times" id="closeBtn"></i>
+            </div>
+
+            <ul class="menu">
+                <li class="active"><i class="fa fa-home"></i><span>Dashboard</span></li>
+                <li><a href="upload.html"><i class="fa fa-calendar"></i><span>Upload D</span></a></li>
+                <li><i class="fa fa-image"></i><span>Users</span></li>
+                <li><i class="fa fa-chalkboard-teacher"></i><span>Teachers</span></li>
+                <li><i class="fa fa-envelope"></i><span>Messages</span></li>
+                <li><i class="fa fa-gear"></i><span>Settings</span></li>
+            </ul>
+
+            <div class="logout">
+                <i class="fa fa-sign-out-alt"></i><span>Logout</span>
+            </div>
+        </div>
+
+        <!-- MAIN -->
+        <div class="main">
+            <div class="topbar">
+                <div class="dash">
+                    <i class="fa fa-bars" id="toggleBtn"></i>
+                    <h2>Dashboard</h2>
+                </div>
+
+                <div class="admin">
+                    <img src="img/image copy.png" alt="profile" />
+                    <h2>Admin</h2>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

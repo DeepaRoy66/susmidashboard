@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> Dashboard</title>
+    <link rel="stylesheet" href="user.css">
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="sidebar.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-top">
+
+                <i class="fa fa-times" id="closeBtn"></i>
+            </div>
+
+            <ul class="menu">
+                <li><a href="index.html"><i class="fa fa-home"></i><span>Dashboard</span></a></li>
+                <li><a href="upload.html"><i class="fa fa-calendar"></i><span>Upload file</span></a></li>
+                <li class="active"><a href="user.html"><i class="fa fa-image"></i><span>Users</span></a></li>
+                <li><i class="fa fa-chalkboard-teacher"></i><span>Teachers</span></li>
+                <li><i class="fa fa-envelope"></i><span>Messages</span></li>
+                <li><i class="fa fa-gear"></i><span>Settings</span></li>
+            </ul>
+
+            <div class="logout">
+                <i class="fa fa-sign-out-alt"></i><span>Logout</span>
+            </div>
+        </div>
+
+        <!-- MAIN -->
+        <div class="main">
+            <div class="topbar">
+                <div class="dash">
+                    <i class="fa fa-bars" id="toggleBtn"></i>
+                    <h2>User</h2>
+                </div>
+
+                <div class="admin">
+                    <img src="img/image copy.png" alt="profile" />
+                    <h2>Admin</h2>
+                </div>
+            </div>
+           <div class="container">
+    <h2>Add User</h2>
+    <div class="error" id="error"></div>
+
+    <form onsubmit="event.preventDefault(); addUser();">
+        <input type="text" id="name" placeholder="Name (optional)">
+        <input type="email" id="email" placeholder="Gmail (required)">
+        <input type="file" id="profilePic" accept="image/*">
+        <button type="submit">Add User</button>
+    </form>
+
+    <div class="users-list" id="usersList"></div>
+</div>
+
+
+
+
+        </div>
+    </div>
+
+    <script>
+        const toggleBtn = document.getElementById("toggleBtn");
+        const closeBtn = document.getElementById("closeBtn");
+        const sidebar = document.getElementById("sidebar");
+
+
+        toggleBtn.addEventListener("click", () => {
+            sidebar.classList.add("active");
+        });
+
+
+        closeBtn.addEventListener("click", () => {
+            sidebar.classList.remove("active");
+        });
+
+
+
+
+        let users = [];
+
+        function addUser() {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const profilePicInput = document.getElementById('profilePic');
+            const errorDiv = document.getElementById('error');
+
+            // Clear previous error
+            errorDiv.textContent = '';
+
+            // Validation
+            if (!email) {
+                errorDiv.textContent = "Email is required.";
+                return;
+            }
+            if (!email.endsWith("@gmail.com")) {
+                errorDiv.textContent = "Only Gmail addresses allowed.";
+                return;
+            }
+            if (users.some(u => u.email === email)) {
+                errorDiv.textContent = "This Gmail is already added.";
+                return;
+            }
+
+            // Read profile picture if uploaded
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                const user = {
+                    name: name || "No Name",
+                    email: email,
+                    pic: e.target.result || "https://via.placeholder.com/40"
+                };
+                users.push(user);
+                renderUsers();
+            }
+
+            if (profilePicInput.files[0]) {
+                reader.readAsDataURL(profilePicInput.files[0]);
+            } else {
+                reader.onload({ target: { result: "https://via.placeholder.com/40" } });
+            }
+
+            // Clear inputs
+            document.getElementById('name').value = '';
+            document.getElementById('email').value = '';
+            profilePicInput.value = '';
+        }
+
+        function renderUsers() {
+            const usersList = document.getElementById('usersList');
+            usersList.innerHTML = '';
+
+            users.forEach((user, index) => {
+                const userBox = document.createElement('div');
+                userBox.className = 'user-box';
+
+                const userInfo = document.createElement('div');
+                userInfo.className = 'user-info';
+
+                const img = document.createElement('img');
+                img.src = user.pic;
+
+                const text = document.createElement('div');
+                text.innerHTML = `<strong>${user.name}</strong><br>${user.email}`;
+
+                userInfo.appendChild(img);
+                userInfo.appendChild(text);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.onclick = () => deleteUser(index);
+
+                userBox.appendChild(userInfo);
+                userBox.appendChild(deleteBtn);
+
+                usersList.appendChild(userBox);
+            });
+        }
+
+        function deleteUser(index) {
+            users.splice(index, 1);
+            renderUsers();
+        }
+    </script>
+
+</body>
+
+</html>
