@@ -1,148 +1,393 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="user.css">
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="sidebar.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    
-    <style>
-        .user-box { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #ddd; align-items: center; }
-        .user-info { display: flex; flex-direction: column; }
-        .user-name { font-weight: bold; font-size: 1.1em; }
-        .user-email { color: #666; font-size: 0.9em; }
-        .delete-btn { background: #ff4d4d; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 4px; }
-        .error { color: red; margin-bottom: 10px; }
-        input { display: block; margin-bottom: 10px; padding: 10px; width: 100%; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;}
-        button { padding: 10px 20px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 4px; width: 100%; }
-        button:hover { background: #218838; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Users Management</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" 
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    :root {
+      --sidebar-width: 240px;
+      --sidebar-mini: 72px;
+      --primary: #10b981;
+      --sidebar-bg: #0f172a;
+      --hover-bg: #1e293b;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --card-bg: #ffffff;
+      --transition: all 0.28s ease;
+      --danger: #ef4444;
+      --info: #3b82f6;
+      --success: #10b981;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      min-height: 100vh;
+    }
+
+    .layout { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--sidebar-bg);
+      color: var(--text);
+      position: fixed;
+      height: 100%;
+      z-index: 1000;
+      transition: var(--transition);
+      overflow-y: auto;
+    }
+    .sidebar.mini { width: var(--sidebar-mini); }
+    .sidebar.mini .item-text { opacity:0; visibility:hidden; width:0; }
+
+    .sidebar-header {
+      padding: 1.1rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #334155;
+    }
+    .brand { font-weight:700; font-size:1.25rem; color:white; }
+
+    .toggle-btn {
+      background:none; border:none; color:var(--text-muted);
+      font-size:1.3rem; cursor:pointer; padding:0.4rem; border-radius:6px;
+    }
+    .toggle-btn:hover { color:white; background:rgba(255,255,255,0.1); }
+
+    .menu { list-style:none; margin:1.5rem 0; }
+    .menu-item a {
+      display:flex; align-items:center; padding:0.9rem 1.2rem;
+      color:var(--text); text-decoration:none; font-size:0.97rem;
+    }
+    .menu-item i { width:24px; font-size:1.18rem; margin-right:1.1rem; text-align:center; }
+    .menu-item a:hover { background:var(--hover-bg); color:white; }
+    .menu-item.active a {
+      background: rgba(16,185,129,0.15);
+      color: var(--primary);
+      border-left: 4px solid var(--primary);
+    }
+
+    .logout { position:absolute; bottom:1.5rem; width:100%; }
+
+    .main-content {
+      margin-left: var(--sidebar-width);
+      transition: var(--transition);
+      flex:1; padding:1.5rem;
+    }
+    .sidebar.mini + .main-content { margin-left: var(--sidebar-mini); }
+
+    .top-bar {
+      display:flex; justify-content:space-between; align-items:center;
+      margin-bottom:1.8rem; background:var(--sidebar-bg); color:white;
+      padding:1rem 1.5rem; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1);
+    }
+    .page-title { font-size:1.4rem; font-weight:600; }
+    .profile { display:flex; align-items:center; gap:0.8rem; }
+    .profile img {
+      width:40px; height:40px; border-radius:50%; border:2px solid var(--primary);
+    }
+    .hamburger { font-size:1.6rem; color:white; cursor:pointer; display:none; }
+
+    .card {
+      background:var(--card-bg); border-radius:12px; padding:2rem;
+      box-shadow:0 6px 20px rgba(0,0,0,0.08); max-width:1100px; margin:0 auto;
+    }
+    h2 { margin-bottom:1.5rem; color:#0f172a; }
+
+    .add-user-form {
+      background: #f8fafc;
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+      border: 1px solid #e2e8f0;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 1.2rem;
+    }
+
+    input, select {
+      padding: 0.75rem 1rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .submit-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.8rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .submit-btn:hover { background: #059669; }
+
+    table {
+      width:100%; border-collapse:collapse; margin-top:1rem;
+    }
+    th, td {
+      padding:1rem; text-align:left; border-bottom:1px solid #e2e8f0;
+    }
+    th { background:#f8fafc; font-weight:600; color:#334155; }
+    tr:hover { background:#f1f5f9; }
+
+    .actions button {
+      border:none; padding:0.5rem 1rem; border-radius:6px;
+      cursor:pointer; font-size:0.9rem; margin-right:0.5rem;
+      transition:0.2s;
+    }
+    .actions .edit { background:var(--info); color:white; }
+    .actions .delete { background:var(--danger); color:white; }
+    .actions button:hover { opacity:0.9; transform:translateY(-1px); }
+
+    .status-message {
+      margin:1rem 0; padding:1rem; border-radius:8px; text-align:center;
+      font-weight:500; display:none;
+    }
+    .status-success { background:rgba(16,185,129,0.15); color:var(--success); border:1px solid var(--success); }
+    .status-error   { background:rgba(239,68,68,0.15);   color:var(--danger);  border:1px solid var(--danger); }
+
+    @media (max-width: 992px) {
+      .sidebar { transform:translateX(-100%); width:var(--sidebar-width)!important; }
+      .sidebar.open { transform:translateX(0); }
+      .main-content { margin-left:0 !important; }
+      .hamburger { display:block; }
+      .sidebar-header .toggle-btn { display:none; }
+    }
+  </style>
 </head>
-
 <body>
-    <div class="container">
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-top">
-                <i class="fa fa-times" id="closeBtn"></i>
-            </div>
-            <ul class="menu">
-                <li><a href="index.html"><i class="fa fa-home"></i><span>Dashboard</span></a></li>
-                <li><a href="upload.html"><i class="fa fa-calendar"></i><span>Upload file</span></a></li>
-                <li class="active"><a href="user.html"><i class="fa fa-image"></i><span>Users</span></a></li>
-                <li><i class="fa fa-chalkboard-teacher"></i><span>Teachers</span></li>
-                <li><i class="fa fa-envelope"></i><span>Messages</span></li>
-                <li><i class="fa fa-gear"></i><span>Settings</span></li>
-            </ul>
-            <div class="logout"><i class="fa fa-sign-out-alt"></i><span>Logout</span></div>
-        </div>
 
-        <div class="main">
-            <div class="topbar">
-                <div class="dash">
-                    <i class="fa fa-bars" id="toggleBtn"></i>
-                    <h2>User Management</h2>
-                </div>
-                <div class="admin">
-                    <img src="img/image copy.png" alt="profile" />
-                    <h2>Admin</h2>
-                </div>
-            </div>
+<div class="layout">
 
-            <div class="container" style="padding: 20px;">
-                <h2>Add New User</h2>
-                <div class="error" id="error"></div>
-
-                <form onsubmit="event.preventDefault(); addUser();">
-                    <input type="text" id="name" placeholder="Name (optional)">
-                    <input type="email" id="email" placeholder="Gmail (required)">
-                    <input type="password" id="password" placeholder="Password (required)">
-                    <button type="submit">Add User</button>
-                </form>
-
-                <div class="users-list" id="usersList" style="margin-top: 20px;"></div>
-            </div>
-        </div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="brand"><span class="brand-text">Study</span>Panel</div>
+      <button class="toggle-btn" id="collapseBtn">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
     </div>
 
-    <script>
-        const API_URL = "http://localhost:5000/users";
+    <ul class="menu">
+      <li class="menu-item">
+        <a href="index.html"><i class="fa-solid fa-gauge"></i><span class="item-text">Dashboard</span></a>
+      </li>
+      <li class="menu-item">
+        <a href="upload.html"><i class="fa-solid fa-cloud-arrow-up"></i><span class="item-text">Upload file</span></a>
+      </li>
+      <li class="menu-item active">
+        <a href="user.html"><i class="fa-solid fa-users"></i><span class="item-text">Users</span></a>
+      </li>
+      <li class="menu-item">
+        <a href="#"><i class="fa-solid fa-chalkboard-user"></i><span class="item-text">Teachers</span></a>
+      </li>
+      <li class="menu-item">
+        <a href="#"><i class="fa-solid fa-envelope"></i><span class="item-text">Messages</span></a>
+      </li>
+      <li class="menu-item">
+        <a href="#"><i class="fa-solid fa-gear"></i><span class="item-text">Settings</span></a>
+      </li>
+    </ul>
 
-        document.addEventListener("DOMContentLoaded", loadUsers);
+    <div class="logout menu-item">
+      <a href="#"><i class="fa-solid fa-right-from-bracket"></i><span class="item-text">Logout</span></a>
+    </div>
+  </aside>
 
-        async function loadUsers() {
-            try {
-                const res = await fetch(API_URL);
-                const users = await res.json();
-                renderUsers(users);
-            } catch (err) { console.error("Error:", err); }
-        }
+  <main class="main-content">
+    <div class="top-bar">
+      <i class="fa-solid fa-bars hamburger" id="hamburger"></i>
+      <div class="page-title">Users Management</div>
+      <div class="profile">
+        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80" alt="Admin">
+        <span>Admin</span>
+      </div>
+    </div>
 
-        async function addUser() {
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const errorDiv = document.getElementById('error');
+    <div class="card">
+      <h2>Manage Users</h2>
 
-            errorDiv.textContent = '';
+      <!-- Add New User Form -->
+      <form id="addUserForm" class="add-user-form">
+        <div class="form-row">
+          <div>
+            <label for="fullname">Full Name *</label>
+            <input type="text" id="fullname" name="fullname" required placeholder="e.g. Ram Sharma">
+          </div>
+          <div>
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required placeholder="e.g. ram@example.com">
+          </div>
+          <div>
+            <label for="password">Password *</label>
+            <input type="password" id="password" name="password" required minlength="6">
+          </div>
+          <div>
+            <label for="role">Role *</label>
+            <select id="role" name="role" required>
+              <option value="">Select role</option>
+              <option value="student">Student</option>
+              <option value="teacher">Teacher</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </div>
 
-            if (!email || !password) return errorDiv.textContent = "Email and Password required.";
-            if (!email.endsWith("@gmail.com")) return errorDiv.textContent = "Only Gmail allowed.";
+        <button type="submit" class="submit-btn">Add New User</button>
+      </form>
 
-            try {
-                // Sending only text data
-                const res = await fetch(API_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name: name || "No Name", email, password })
-                });
+      <div id="statusMessage" class="status-message"></div>
 
-                if (res.ok) {
-                    document.getElementById('name').value = '';
-                    document.getElementById('email').value = '';
-                    document.getElementById('password').value = '';
-                    loadUsers();
-                } else {
-                    const data = await res.json();
-                    errorDiv.textContent = data.message;
-                }
-            } catch (err) { errorDiv.textContent = "Server Error"; }
-        }
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Joined</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="usersTableBody">
+          <tr><td colspan="6" style="text-align:center;padding:3rem;">Loading users...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
 
-        function renderUsers(users) {
-            const list = document.getElementById('usersList');
-            list.innerHTML = '';
-            users.forEach(user => {
-                const box = document.createElement('div');
-                box.className = 'user-box';
-                // Removed image tag from display
-                box.innerHTML = `
-                    <div class="user-info">
-                        <span class="user-name">${user.name}</span>
-                        <span class="user-email">${user.email}</span>
-                    </div>
-                    <button class="delete-btn" onclick="deleteUser('${user._id}')">Delete</button>
-                `;
-                list.appendChild(box);
-            });
-        }
+</div>
 
-        async function deleteUser(id) {
-            if (confirm("Delete this user?")) {
-                await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-                loadUsers();
-            }
-        }
+<script>
+// ── Sidebar controls ──
+const sidebar = document.getElementById('sidebar');
+const collapseBtn = document.getElementById('collapseBtn');
+const hamburger = document.getElementById('hamburger');
 
-        // Sidebar logic
-        const toggleBtn = document.getElementById("toggleBtn");
-        const closeBtn = document.getElementById("closeBtn");
-        const sidebar = document.getElementById("sidebar");
+collapseBtn.addEventListener('click', () => {
+  if (window.innerWidth > 992) sidebar.classList.toggle('mini');
+});
 
-        if(toggleBtn) toggleBtn.onclick = () => sidebar.classList.add("active");
-        if(closeBtn) closeBtn.onclick = () => sidebar.classList.remove("active");
-    </script>
+hamburger.addEventListener('click', () => sidebar.classList.toggle('open'));
+
+document.addEventListener('click', e => {
+  if (window.innerWidth <= 992 &&
+      sidebar.classList.contains('open') &&
+      !sidebar.contains(e.target) &&
+      !hamburger.contains(e.target)) {
+    sidebar.classList.remove('open');
+  }
+});
+
+// ── Status helper ──
+function showStatus(message, isSuccess = true) {
+  const el = document.getElementById('statusMessage');
+  el.textContent = message;
+  el.className = 'status-message ' + (isSuccess ? 'status-success' : 'status-error');
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 5000);
+}
+
+// ── Load users ──
+async function loadUsers() {
+  const tbody = document.getElementById('usersTableBody');
+
+  try {
+    const res = await fetch('http://localhost:5000/users', {
+      method: 'GET',
+      credentials: 'include',
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const data = await res.json();
+    const users = Array.isArray(data) ? data : (data.users || data.data || []);
+
+    tbody.innerHTML = '';
+
+    if (users.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:3rem;">No users found</td></tr>';
+      return;
+    }
+
+    users.forEach(u => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${u.id || u.uid || u.user_id || '—'}</td>
+        <td>${u.full_name || u.name || u.fullname || '—'}</td>
+        <td>${u.email || '—'}</td>
+        <td>${u.role || u.user_role || '—'}</td>
+        <td>${u.created_at ? new Date(u.created_at).toLocaleDateString('en-GB') : '—'}</td>
+        <td class="actions">
+          <button class="edit">Edit</button>
+          <button class="delete">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+  } catch (err) {
+    console.error(err);
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#ef4444;padding:3rem;">Error loading users</td></tr>`;
+  }
+}
+
+// ── Add new user ──
+document.getElementById('addUserForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const formData = new FormData(this);
+  const payload = {
+    fullname: formData.get('fullname'),
+    email:    formData.get('email'),
+    password: formData.get('password'),
+    role:     formData.get('role')
+  };
+
+  try {
+    const res = await fetch('http://localhost:5000/users', {   // ← change endpoint if needed (e.g. /register or /api/users)
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || `HTTP ${res.status}`);
+    }
+
+    showStatus('User added successfully!', true);
+    this.reset();           // clear form
+    loadUsers();            // refresh table
+
+  } catch (err) {
+    console.error(err);
+    showStatus('Failed to add user: ' + err.message, false);
+  }
+});
+
+// Load users on page open
+window.addEventListener('DOMContentLoaded', loadUsers);
+</script>
+
 </body>
 </html>

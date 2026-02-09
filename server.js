@@ -1,20 +1,22 @@
 // --- LOAD ENVIRONMENT VARIABLES ---
 require('dotenv').config();
-
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');               // ← ADD THIS LINE
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // --- MIDDLEWARE ---
-app.use(cors()); // Allows Project B to talk to Project A
+app.use(cors());
 app.use(bodyParser.json());
 
+// Serve static files from the CURRENT FOLDER (where server.js is located)
+app.use(express.static(path.join(__dirname, '.')));   // ← ADD THIS LINE
+
 // --- CONNECT TO MONGODB ---
-// Note: Ensure your .env file has MONGO_URI=mongodb://127.0.0.1:27017/userDashboard
 mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/userDashboard')
     .then(() => console.log('✅ Connected to MongoDB'))
     .catch(err => console.error('❌ MongoDB Connection Error:', err));
@@ -25,12 +27,10 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true }
 });
-
 const User = mongoose.model('User', userSchema);
 
 // --- ROUTES ---
-
-// 1. LOGIN ROUTE (Checks email & password)
+// 1. LOGIN ROUTE
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -82,4 +82,4 @@ app.delete('/users/:id', async (req, res) => {
 });
 
 // Start Server
-app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

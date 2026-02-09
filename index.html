@@ -1,55 +1,301 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> Dashboard</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="sidebar.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - Modern Sidebar</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <style>
+    :root {
+      --sidebar-width: 240px;
+      --sidebar-mini: 72px;
+      --primary: #6366f1;         /* indigo */
+      --sidebar-bg: #0f172a;      /* very dark slate */
+      --hover-bg: #1e293b;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --transition: all 0.28s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      min-height: 100vh;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--sidebar-bg);
+      color: var(--text);
+      position: fixed;
+      height: 100%;
+      z-index: 1000;
+      transition: var(--transition);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .sidebar.mini {
+      width: var(--sidebar-mini);
+    }
+
+    .sidebar.mini .item-text,
+    .sidebar.mini .brand-text {
+      opacity: 0;
+      visibility: hidden;
+      width: 0;
+    }
+
+    .sidebar-header {
+      padding: 1.1rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #334155;
+    }
+
+    .brand {
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: white;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-text {
+      transition: var(--transition);
+    }
+
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+      padding: 0.4rem;
+      border-radius: 6px;
+      transition: var(--transition);
+    }
+
+    .toggle-btn:hover {
+      color: white;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .menu {
+      list-style: none;
+      margin: 1.5rem 0;
+    }
+
+    .menu-item {
+      transition: var(--transition);
+    }
+
+    .menu-item a,
+    .menu-item button {
+      display: flex;
+      align-items: center;
+      padding: 0.9rem 1.2rem;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.97rem;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .menu-item i {
+      width: 24px;
+      font-size: 1.18rem;
+      margin-right: 1.1rem;
+      text-align: center;
+    }
+
+    .menu-item:hover {
+      background: var(--hover-bg);
+      color: white;
+    }
+
+    .menu-item.active {
+      background: rgba(99, 102, 241, 0.14);
+      color: var(--primary);
+      border-left: 4px solid var(--primary);
+    }
+
+    .logout {
+      position: absolute;
+      bottom: 1.5rem;
+      width: 100%;
+    }
+
+    /* ── MAIN CONTENT AREA ── */
+    .main-content {
+      margin-left: var(--sidebar-width);
+      transition: var(--transition);
+      flex: 1;
+      padding: 1.5rem;
+    }
+
+    .sidebar.mini + .main-content {
+      margin-left: var(--sidebar-mini);
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .hamburger {
+      font-size: 1.7rem;
+      color: #475569;
+      cursor: pointer;
+      display: none;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .profile img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #e2e8f0;
+    }
+
+    /* Mobile behavior */
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+        width: var(--sidebar-width) !important;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0 !important;
+      }
+
+      .hamburger {
+        display: block;
+      }
+
+      .sidebar-header .toggle-btn {
+        display: none;
+      }
+    }
+  </style>
 </head>
-
 <body>
-    <div class="container">
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-top">
 
-                <i class="fa fa-times" id="closeBtn"></i>
-            </div>
+<div class="layout">
 
-            <ul class="menu">
-                <li class="active"><i class="fa fa-home"></i><span>Dashboard</span></li>
-                <li><a href="upload.html"><i class="fa fa-calendar"></i><span>Upload D</span></a></li>
-                <li><a href="user.html"><i class="fa fa-image"></i><span>Users</span></a></li>
-                <li><i class="fa fa-chalkboard-teacher"></i><span>Teachers</span></li>
-                <li><i class="fa fa-envelope"></i><span>Messages</span></li>
-                <li><i class="fa fa-gear"></i><span>Settings</span></li>
-            </ul>
-
-            <div class="logout">
-                <i class="fa fa-sign-out-alt"></i><span>Logout</span>
-            </div>
-        </div>
-
-        <!-- MAIN -->
-        <div class="main">
-            <div class="topbar">
-                <div class="dash">
-                    <i class="fa fa-bars" id="toggleBtn"></i>
-                    <h2>Dashboard</h2>
-                </div>
-
-                <div class="admin">
-                    <img src="img/image copy.png" alt="profile" />
-                    <h2>Admin</h2>
-                </div>
-            </div>
-
-        </div>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="brand"><span class="brand-text">Admin</span>Panel</div>
+      <button class="toggle-btn" id="collapseBtn" title="Collapse sidebar">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
     </div>
 
-    <script src="script.js"></script>
-</body>
+    <ul class="menu">
+      <li class="menu-item active">
+        <a href="#"><i class="fa-solid fa-gauge"></i><span class="item-text">Dashboard</span></a>
+      </li>
+      <li class="menu-item">
+        <a href="upload.html"><i class="fa-solid fa-cloud-arrow-up"></i><span class="item-text">Upload Data</span></a>
+      </li>
+      <li class="menu-item">
+        <a href="user.html"><i class="fa-solid fa-users"></i><span class="item-text">Users</span></a>
+      </li>
+      <li class="menu-item">
+        <a href="#"><i class="fa-solid fa-chalkboard-user"></i><span class="item-text">Teachers</span></a>
+      </li>
+      <li class="menu-item">
+        <a href="#"><i class="fa-solid fa-envelope"></i><span class="item-text">Messages</span></a>
+      </li>
+      <li class="menu-item">
+        <a href="#"><i class="fa-solid fa-gear"></i><span class="item-text">Settings</span></a>
+      </li>
+    </ul>
 
+    <div class="logout menu-item">
+      <a href="#"><i class="fa-solid fa-right-from-bracket"></i><span class="item-text">Logout</span></a>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-content">
+    <div class="top-bar">
+      <i class="fa-solid fa-bars hamburger" id="hamburger"></i>
+      <h1>Dashboard</h1>
+      <div class="profile">
+        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80" alt="Admin">
+        <span>Admin</span>
+      </div>
+    </div>
+
+    <!-- Your real content goes here -->
+    <div style="background:white; padding:2rem; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+      <h2>Welcome back!</h2>
+      <p>This is your modern sidebar dashboard starter.</p>
+    </div>
+  </main>
+
+</div>
+
+<script>
+  const sidebar = document.getElementById('sidebar');
+  const collapseBtn = document.getElementById('collapseBtn');
+  const hamburger = document.getElementById('hamburger');
+
+  // Desktop: collapse / expand
+  collapseBtn.addEventListener('click', () => {
+    if (window.innerWidth > 992) {
+      sidebar.classList.toggle('mini');
+      // You can also save preference to localStorage here
+    }
+  });
+
+  // Mobile: open / close sidebar
+  hamburger.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+  });
+
+  // Close sidebar when clicking outside (mobile)
+  document.addEventListener('click', function(e) {
+    if (window.innerWidth <= 992 &&
+        sidebar.classList.contains('open') &&
+        !sidebar.contains(e.target) &&
+        !hamburger.contains(e.target)) {
+      sidebar.classList.remove('open');
+    }
+  });
+</script>
+
+</body>
 </html>
