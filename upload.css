@@ -1,93 +1,93 @@
-* {
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif
+/* upload.css - Specific styles for the Upload Page */
+
+/* Limit the width of the upload card for better readability */
+.card {
+    max-width: 800px !important; /* Overrides the default width slightly */
+    margin: 0 auto;
 }
 
-
-
-.form-card {
-    max-width: 650px;
-    margin: auto;
-    background: #fff;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-}
-
-.form-card h2 {
-    margin-bottom: 20px;
-    text-align: center;
-    color: #333;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: #444;
-}
-
-input,
-select,
+/* --- TEXTAREA STYLING --- */
 textarea {
     width: 100%;
-    padding: 10px 12px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #cbd5e1;
     border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 14px;
+    font-size: 1rem;
+    font-family: inherit; /* Inherits font from body */
+    resize: vertical;     /* Allows user to resize only vertically */
+    min-height: 120px;
+    background-color: #fff;
+    transition: all 0.2s ease;
 }
 
-textarea {
-    resize: vertical;
-    min-height: 80px
+textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
 }
 
-input[type="file"] {
-    padding: 6px;
-}
-
-.row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
-
-.actions {
-    text-align: center;
-    margin-top: 20px;
-}
-
-button {
-    background: #2563eb;
-    color: #fff;
-    border: none;
-    padding: 12px 30px;
-    font-size: 15px;
-    border-radius: 10px;
+/* --- SELECT DROPDOWN STYLING --- */
+select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #fff;
     cursor: pointer;
+    appearance: none; /* Removes default browser arrow */
+    /* Custom Arrow Icon */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
 }
 
-button:hover {
-    background: #1e4fd6
+select:focus {
+    outline: none;
+    border-color: var(--primary);
 }
 
-.note {
-    font-size: 12px;
-    color: #666;
+/* --- FILE INPUT STYLING --- */
+input[type="file"] {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+    text-slate: #64748b;
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+input[type="file"]:hover {
+    background: #f1f5f9;
+    border-color: var(--primary);
+}
+
+/* Custom file upload button (webkit only) */
+input[type="file"]::file-selector-button {
+    margin-right: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: none;
+    background: var(--primary);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background: #4338ca;
+}
+
+/* Helper Text */
+.helper-text {
+    font-size: 0.85rem;
+    color: #64748b;
     margin-top: 6px;
-}@media (max-width: 768px) {
-    .row {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-    .form-card {
-        padding: 20px;
-    }
-    button {
-        width: 100%;
-    }
+    display: block;
 }

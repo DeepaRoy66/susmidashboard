@@ -1,448 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Upload Study Materials</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload Study Materials</title>
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-    <style>
-        :root {
-            --sidebar-width: 240px;
-            --sidebar-mini: 72px;
-            --primary: #10b981;           /* emerald green - matches your active item */
-            --sidebar-bg: #0f172a;
-            --hover-bg: #1e293b;
-            --text: #e2e8f0;
-            --text-muted: #94a3b8;
-            --transition: all 0.28s ease;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background: #f1f5f9;
-            color: #0f172a;
-            min-height: 100vh;
-        }
-
-        .layout {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* ── SIDEBAR ── */
-        .sidebar {
-            width: var(--sidebar-width);
-            background: var(--sidebar-bg);
-            color: var(--text);
-            position: fixed;
-            height: 100%;
-            z-index: 1000;
-            transition: var(--transition);
-            overflow-y: auto;
-        }
-
-        .sidebar.mini {
-            width: var(--sidebar-mini);
-        }
-
-        .sidebar.mini .item-text {
-            opacity: 0;
-            visibility: hidden;
-            width: 0;
-        }
-
-        .sidebar-header {
-            padding: 1.1rem 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #334155;
-        }
-
-        .brand {
-            font-weight: 700;
-            font-size: 1.25rem;
-            color: white;
-        }
-
-        .toggle-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.3rem;
-            cursor: pointer;
-            padding: 0.4rem;
-            border-radius: 6px;
-        }
-
-        .toggle-btn:hover {
-            color: white;
-            background: rgba(255,255,255,0.1);
-        }
-
-        .menu {
-            list-style: none;
-            margin: 1.5rem 0;
-        }
-
-        .menu-item a {
-            display: flex;
-            align-items: center;
-            padding: 0.9rem 1.2rem;
-            color: var(--text);
-            text-decoration: none;
-            font-size: 0.97rem;
-            transition: var(--transition);
-        }
-
-        .menu-item i {
-            width: 24px;
-            font-size: 1.18rem;
-            margin-right: 1.1rem;
-            text-align: center;
-        }
-
-        .menu-item a:hover {
-            background: var(--hover-bg);
-            color: white;
-        }
-
-        .menu-item.active a {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--primary);
-            border-left: 4px solid var(--primary);
-        }
-
-        .logout {
-            position: absolute;
-            bottom: 1.5rem;
-            width: 100%;
-        }
-
-        /* ── MAIN CONTENT ── */
-        .main-content {
-            margin-left: var(--sidebar-width);
-            transition: var(--transition);
-            flex: 1;
-            padding: 1.5rem;
-        }
-
-        .sidebar.mini + .main-content {
-            margin-left: var(--sidebar-mini);
-        }
-
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.8rem;
-            background: var(--sidebar-bg);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .page-title {
-            font-size: 1.4rem;
-            font-weight: 600;
-        }
-
-        .profile {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .profile img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid var(--primary);
-        }
-
-        .hamburger {
-            font-size: 1.6rem;
-            color: white;
-            cursor: pointer;
-            display: none;
-        }
-
-        /* Form styling */
-        .form-card {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        h2 {
-            margin-bottom: 1.8rem;
-            color: #0f172a;
-        }
-
-        .form-group {
-            margin-bottom: 1.4rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: #334155;
-        }
-
-        input[type="text"],
-        input[type="file"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-
-        select {
-            appearance: none;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") no-repeat right 1rem center;
-            background-size: 12px;
-        }
-
-        .row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.2rem;
-        }
-
-        textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .note {
-            margin-top: 0.5rem;
-            font-size: 0.85rem;
-            color: #64748b;
-        }
-
-        .actions {
-            text-align: right;
-            margin-top: 1.5rem;
-        }
-
-        button[type="submit"] {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.9rem 2.5rem;
-            border-radius: 10px;
-            font-size: 1.05rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        button[type="submit"]:hover {
-            background: #059669;
-            transform: translateY(-1px);
-        }
-
-        /* Mobile */
-        @media (max-width: 992px) {
-            .sidebar {
-                transform: translateX(-100%);
-                width: var(--sidebar-width) !important;
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0 !important;
-            }
-
-            .hamburger {
-                display: block;
-            }
-
-            .sidebar-header .toggle-btn {
-                display: none;
-            }
-        }
-    </style>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="sidebar.css">
+  <link rel="stylesheet" href="upload.css">
 </head>
 <body>
 
 <div class="layout">
 
-    <!-- Sidebar (same as other pages) -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="brand">StudyPanel</div>
-            <button class="toggle-btn" id="collapseBtn">
-                <i class="fa-solid fa-chevron-left"></i>
-            </button>
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="main-content">
+    <div class="top-bar">
+      <div style="display:flex; align-items:center; gap:15px;">
+        <i class="fa-solid fa-bars hamburger" id="hamburger"></i>
+        <h2>Upload Materials</h2>
+      </div>
+      <div class="profile">
+        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80" alt="Admin">
+        <span>Admin User</span>
+      </div>
+    </div>
+
+    <div class="card"> <div id="statusMessage" class="status-message"></div>
+      
+      <h2>Upload Study Materials</h2>
+
+      <form id="uploadForm">
+        <div class="form-group">
+          <label>Title *</label>
+          <input type="text" id="title" placeholder="e.g. Data Structures Notes" required />
         </div>
 
-        <ul class="menu">
-            <li class="menu-item">
-                <a href="index.html">
-                    <i class="fa-solid fa-gauge"></i>
-                    <span class="item-text">Dashboard</span>
-                </a>
-            </li>
-            <li class="menu-item active">
-                <a href="upload.html">
-                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                    <span class="item-text">Upload file</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="user.html">
-                    <i class="fa-solid fa-users"></i>
-                    <span class="item-text">Users</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="#">
-                    <i class="fa-solid fa-chalkboard-user"></i>
-                    <span class="item-text">Teachers</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="#">
-                    <i class="fa-solid fa-envelope"></i>
-                    <span class="item-text">Messages</span>
-                </a>
-            </li>
-            <li class="menu-item">
-                <a href="#">
-                    <i class="fa-solid fa-gear"></i>
-                    <span class="item-text">Settings</span>
-                </a>
-            </li>
-        </ul>
-
-        <div class="logout menu-item">
-            <a href="#">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span class="item-text">Logout</span>
-            </a>
-        </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="top-bar">
-            <i class="fa-solid fa-bars hamburger" id="hamburger"></i>
-            <div class="page-title">Upload Materials</div>
-            <div class="profile">
-                <img src="img/image copy.png" alt="Admin">
-                <span>Admin</span>
-            </div>
+        <div class="form-row"> <div class="form-group">
+            <label>Material Type *</label>
+            <select id="type" required>
+              <option value="">Select type</option>
+              <option>Notes</option>
+              <option>Syllabus</option>
+              <option>Previous Question</option>
+              <option>Slides</option>
+              <option>Lab Manual</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Semester *</label>
+            <select id="semester" required>
+              <option value="">Select semester</option>
+              <option>1st Semester</option>
+              <option>2nd Semester</option>
+              <option>3rd Semester</option>
+              <option>4th Semester</option>
+              <option>5th Semester</option>
+              <option>6th Semester</option>
+              <option>7th Semester</option>
+              <option>8th Semester</option>
+            </select>
+          </div>
         </div>
 
-        <div class="form-card">
-            <h2>Upload Study Materials</h2>
-
-            <form>
-                <div class="form-group">
-                    <label>Title *</label>
-                    <input type="text" placeholder="e.g. Data Structures Notes" required />
-                </div>
-
-                <div class="row">
-                    <div class="form-group">
-                        <label>Material Type *</label>
-                        <select required>
-                            <option value="">Select type</option>
-                            <option>Notes</option>
-                            <option>Syllabus</option>
-                            <option>Previous Question</option>
-                            <option>Slides</option>
-                            <option>Lab Manual</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Semester *</label>
-                        <select required>
-                            <option value="">Select semester</option>
-                            <option>1st Semester</option>
-                            <option>2nd Semester</option>
-                            <option>3rd Semester</option>
-                            <option>4th Semester</option>
-                            <option>5th Semester</option>
-                            <option>6th Semester</option>
-                            <option>7th Semester</option>
-                            <option>8th Semester</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Subject *</label>
-                    <input type="text" placeholder="e.g. Web Technology" required />
-                </div>
-
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea placeholder="Short description about the material..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Upload File *</label>
-                    <input type="file" accept=".pdf,.doc,.docx,.ppt,.pptx" required />
-                    <div class="note">Allowed: PDF, DOC, DOCX, PPT, PPTX</div>
-                </div>
-
-                <div class="actions">
-                    <button type="submit">Upload</button>
-                </div>
-            </form>
+        <div class="form-group">
+          <label>Subject *</label>
+          <input type="text" id="subject" placeholder="e.g. Web Technology" required />
         </div>
-    </main>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="description" placeholder="Short description..." style="width:100%; padding:0.75rem; border:1px solid #cbd5e1; border-radius:8px; min-height:100px; resize:vertical; font-family:inherit;"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Upload File *</label>
+          <input type="file" id="file" accept=".pdf,.doc,.docx,.ppt,.pptx" required />
+          <div style="margin-top:0.5rem; font-size:0.85rem; color:#64748b;">Allowed: PDF, DOC, PPT</div>
+        </div>
+
+        <div class="actions" style="text-align: left;">
+          <button type="submit" class="submit-btn">Upload Material</button>
+        </div>
+      </form>
+    </div>
+  </main>
 
 </div>
 
+<script src="global.js"></script>
+
 <script>
-    const sidebar = document.getElementById('sidebar');
-    const collapseBtn = document.getElementById('collapseBtn');
-    const hamburger = document.getElementById('hamburger');
+  // Simple form handling (Client-side only for now)
+  const form = document.getElementById('uploadForm');
+  const statusMsg = document.getElementById('statusMessage');
 
-    // Desktop: collapse / expand
-    collapseBtn?.addEventListener('click', () => {
-        if (window.innerWidth > 992) {
-            sidebar.classList.toggle('mini');
-        }
-    });
-
-    // Mobile: open / close
-    hamburger?.addEventListener('click', () => {
-        sidebar.classList.toggle('open');
-    });
-
-    // Close sidebar on outside click (mobile)
-    document.addEventListener('click', (e) => {
-        if (window.innerWidth <= 992 &&
-            sidebar.classList.contains('open') &&
-            !sidebar.contains(e.target) &&
-            !hamburger?.contains(e.target)) {
-            sidebar.classList.remove('open');
-        }
-    });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    // In a real app, you would use FormData and fetch() here to send to server
+    // Example: const formData = new FormData(form);
+    
+    // Simulate success
+    statusMsg.textContent = "Material uploaded successfully! (Simulation)";
+    statusMsg.className = "status-message status-success";
+    statusMsg.style.display = "block";
+    
+    form.reset();
+    
+    setTimeout(() => {
+      statusMsg.style.display = "none";
+    }, 3000);
+  });
 </script>
 
 </body>
