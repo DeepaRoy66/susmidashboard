@@ -4,20 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard</title>
-  
+
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  
+
+  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="sidebar.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="layout">
+  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar"></aside>
 
+  <!-- Main Content -->
   <main class="main-content">
+    <!-- Top Bar -->
     <div class="top-bar">
-      <div style="display:flex; align-items:center; gap:15px;">
+      <div class="top-bar-left">
         <i class="fa-solid fa-bars hamburger" id="hamburger"></i>
         <h2>Dashboard</h2>
       </div>
@@ -27,20 +33,33 @@
       </div>
     </div>
 
+    <!-- Stats Grid -->
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-info"><h3>Total Users</h3><p id="totalUsers">0</p></div>
-        <div class="stat-icon icon-users"><i class="fa-solid fa-users"></i></div>
+        <div class="stat-info">
+          <h3>Total Users</h3>
+          <p id="totalUsers">0</p>
+        </div>
+        <div class="stat-icon icon-users">
+          <i class="fa-solid fa-users"></i>
+        </div>
       </div>
+
       <div class="stat-card">
-        <div class="stat-info"><h3>Files</h3><p>128</p></div>
-        <div class="stat-icon icon-files"><i class="fa-solid fa-file"></i></div>
+        <div class="stat-info">
+          <h3>Files</h3>
+          <p>128</p>
+        </div>
+        <div class="stat-icon icon-files">
+          <i class="fa-solid fa-file"></i>
+        </div>
       </div>
     </div>
 
+    <!-- Card -->
     <div class="card">
       <h3>Welcome Back</h3>
-      <p style="color:#64748b; margin-top:10px;">This dashboard is fully connected to MongoDB.</p>
+      <p>This dashboard is fully connected to MongoDB.</p>
     </div>
   </main>
 </div>
@@ -53,5 +72,6 @@
     .then(data => document.getElementById('totalUsers').innerText = data.length)
     .catch(err => console.log(err));
 </script>
+
 </body>
 </html>
