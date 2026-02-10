@@ -1,8 +1,8 @@
-// --- LOAD MODULES ---
+
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
+const cors = require('cors'); 
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
@@ -10,27 +10,23 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Create 'uploads' folder if it doesn't exist
 const uploadDir = './uploads';
 if (!fs.existsSync(uploadDir)){
     fs.mkdirSync(uploadDir);
 }
 
-// --- MIDDLEWARE ---
-app.use(cors());
+
+app.use(cors()); 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '.')));
 app.use('/uploads', express.static('uploads')); 
 
-// --- CONNECT TO MONGODB ---
 mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/userDashboard')
     .then(() => console.log('✅ Connected to MongoDB'))
     .catch(err => console.error('❌ MongoDB Connection Error:', err.message));
 
-// --- SCHEMAS ---
 
-// User Schema
 const userSchema = new mongoose.Schema({
     name: String,
     email: { type: String, required: true, unique: true },
@@ -39,7 +35,7 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.model('User', userSchema);
 
-// Material Schema
+
 const materialSchema = new mongoose.Schema({
     title: String,
     type: String,
@@ -52,7 +48,7 @@ const materialSchema = new mongoose.Schema({
 });
 const Material = mongoose.model('Material', materialSchema);
 
-// --- MULTER CONFIGURATION (PDF ONLY) ---
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, 'uploads/'),
     filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
@@ -69,9 +65,33 @@ const upload = multer({
     }
 });
 
-// --- ROUTES ---
 
-// 1. MATERIAL UPLOAD ROUTE (The one you requested)
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+       
+        const user = await User.findOne({ email: email });
+
+      
+        if (user && user.password === password) {
+            return res.status(200).json({ 
+                success: true, 
+                message: "Login successful!" 
+            });
+        } else {
+            // Generic error for security
+            return res.status(401).json({ 
+                success: false, 
+                message: "Invalid email or password" 
+            });
+        }
+    } catch (error) {
+        console.error("Login error:", error);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+});
+
+// 2. MATERIAL UPLOAD ROUTE (Original Code)
 app.post('/upload-material', upload.single('file'), async (req, res) => {
     try {
         if (!req.file) {
@@ -93,11 +113,12 @@ app.post('/upload-material', upload.single('file'), async (req, res) => {
     }
 });
 
-// 2. USER ROUTES (Existing logic)
+
 app.get('/users', async (req, res) => {
     const users = await User.find().sort({ joined: -1 });
     res.json(users);
 });
+
 
 app.post('/users', async (req, res) => {
     try {
@@ -109,7 +130,7 @@ app.post('/users', async (req, res) => {
     }
 });
 
-// --- START SERVER ---
+
 app.listen(PORT, () => {
-    console.log(`🚀 Server: http://localhost:${PORT}`);
+    console.log(`🚀 Backend running: http://localhost:${PORT}`);
 });
