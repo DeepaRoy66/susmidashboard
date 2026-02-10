@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Upload Study Materials</title>
 
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
+  <!-- CSS Files -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="sidebar.css">
   <link rel="stylesheet" href="upload.css">
@@ -15,31 +17,43 @@
 
 <div class="layout">
 
+  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar"></aside>
 
+  <!-- Main Content -->
   <main class="main-content">
+
+    <!-- Top Bar -->
     <div class="top-bar">
-      <div style="display:flex; align-items:center; gap:15px;">
+      <div class="top-bar-left">
         <i class="fa-solid fa-bars hamburger" id="hamburger"></i>
         <h2>Upload Materials</h2>
       </div>
+
       <div class="profile">
         <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80" alt="Admin">
         <span>Admin User</span>
       </div>
     </div>
 
-    <div class="card"> <div id="statusMessage" class="status-message"></div>
-      
+    <!-- Card -->
+    <div class="card">
+
+      <!-- Status Message -->
+      <div id="statusMessage" class="status-message"></div>
+
       <h2>Upload Study Materials</h2>
 
+      <!-- Upload Form -->
       <form id="uploadForm">
+
         <div class="form-group">
           <label>Title *</label>
           <input type="text" id="title" placeholder="e.g. Data Structures Notes" required />
         </div>
 
-        <div class="form-row"> <div class="form-group">
+        <div class="form-row">
+          <div class="form-group">
             <label>Material Type *</label>
             <select id="type" required>
               <option value="">Select type</option>
@@ -50,6 +64,7 @@
               <option>Lab Manual</option>
             </select>
           </div>
+
           <div class="form-group">
             <label>Semester *</label>
             <select id="semester" required>
@@ -73,44 +88,41 @@
 
         <div class="form-group">
           <label>Description</label>
-          <textarea id="description" placeholder="Short description..." style="width:100%; padding:0.75rem; border:1px solid #cbd5e1; border-radius:8px; min-height:100px; resize:vertical; font-family:inherit;"></textarea>
+          <textarea id="description" placeholder="Short description..."></textarea>
         </div>
 
         <div class="form-group">
           <label>Upload File *</label>
           <input type="file" id="file" accept=".pdf,.doc,.docx,.ppt,.pptx" required />
-          <div style="margin-top:0.5rem; font-size:0.85rem; color:#64748b;">Allowed: PDF, DOC, PPT</div>
+          <span class="helper-text">Allowed: PDF, DOC, PPT</span>
         </div>
 
-        <div class="actions" style="text-align: left;">
+        <div class="actions">
           <button type="submit" class="submit-btn">Upload Material</button>
         </div>
+
       </form>
     </div>
   </main>
-
 </div>
 
+<!-- Global JS -->
 <script src="global.js"></script>
 
+<!-- Page Script -->
 <script>
-  // Simple form handling (Client-side only for now)
   const form = document.getElementById('uploadForm');
   const statusMsg = document.getElementById('statusMessage');
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    
-    // In a real app, you would use FormData and fetch() here to send to server
-    // Example: const formData = new FormData(form);
-    
-    // Simulate success
+
     statusMsg.textContent = "Material uploaded successfully! (Simulation)";
     statusMsg.className = "status-message status-success";
     statusMsg.style.display = "block";
-    
+
     form.reset();
-    
+
     setTimeout(() => {
       statusMsg.style.display = "none";
     }, 3000);
