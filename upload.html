@@ -5,25 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Upload Study Materials</title>
 
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-  <!-- CSS Files -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="sidebar.css">
   <link rel="stylesheet" href="upload.css">
+  
+  <style>
+    /* Ensure status messages are visible and styled */
+    .status-message {
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      display: none;
+      font-weight: 500;
+    }
+    .status-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .status-error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+  </style>
 </head>
 <body>
 
 <div class="layout">
 
-  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar"></aside>
 
-  <!-- Main Content -->
   <main class="main-content">
 
-    <!-- Top Bar -->
     <div class="top-bar">
       <div class="top-bar-left">
         <i class="fa-solid fa-bars hamburger" id="hamburger"></i>
@@ -36,15 +52,12 @@
       </div>
     </div>
 
-    <!-- Card -->
     <div class="card">
 
-      <!-- Status Message -->
       <div id="statusMessage" class="status-message"></div>
 
       <h2>Upload Study Materials</h2>
 
-      <!-- Upload Form -->
       <form id="uploadForm">
 
         <div class="form-group">
@@ -92,13 +105,13 @@
         </div>
 
         <div class="form-group">
-          <label>Upload File *</label>
-          <input type="file" id="file" accept=".pdf,.doc,.docx,.ppt,.pptx" required />
-          <span class="helper-text">Allowed: PDF, DOC, PPT</span>
+          <label>Upload File (PDF Only) *</label>
+          <input type="file" id="file" accept=".pdf" required />
+          <span class="helper-text">Allowed: PDF only</span>
         </div>
 
         <div class="actions">
-          <button type="submit" class="submit-btn">Upload Material</button>
+          <button type="submit" class="submit-btn" id="submitBtn">Upload Material</button>
         </div>
 
       </form>
@@ -106,26 +119,63 @@
   </main>
 </div>
 
-<!-- Global JS -->
 <script src="global.js"></script>
 
-<!-- Page Script -->
 <script>
   const form = document.getElementById('uploadForm');
   const statusMsg = document.getElementById('statusMessage');
+  const submitBtn = document.getElementById('submitBtn');
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    statusMsg.textContent = "Material uploaded successfully! (Simulation)";
-    statusMsg.className = "status-message status-success";
+    // Visual feedback: disable button while uploading
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Uploading...";
+
+    // Use FormData to send both text and the PDF file
+    const formData = new FormData();
+    formData.append('title', document.getElementById('title').value);
+    formData.append('type', document.getElementById('type').value);
+    formData.append('semester', document.getElementById('semester').value);
+    formData.append('subject', document.getElementById('subject').value);
+    formData.append('description', document.getElementById('description').value);
+    formData.append('file', document.getElementById('file').files[0]);
+
+    try {
+      // Point this to your server URL (localhost:5000 if running locally)
+      const response = await fetch('http://localhost:5000/upload-material', {
+        method: 'POST',
+        body: formData 
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Success
+        statusMsg.textContent = result.message || "Material uploaded successfully!";
+        statusMsg.className = "status-message status-success";
+        form.reset();
+      } else {
+        // Server-side validation error (e.g., not a PDF)
+        statusMsg.textContent = result.message || "Upload failed.";
+        statusMsg.className = "status-message status-error";
+      }
+    } catch (error) {
+      // Connection error
+      statusMsg.textContent = "Error: Could not connect to the server.";
+      statusMsg.className = "status-message status-error";
+    }
+
+    // Reset button and show message
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Upload Material";
     statusMsg.style.display = "block";
 
-    form.reset();
-
+    // Hide status after 5 seconds
     setTimeout(() => {
       statusMsg.style.display = "none";
-    }, 3000);
+    }, 5000);
   });
 </script>
 
